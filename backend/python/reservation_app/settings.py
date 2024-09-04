@@ -31,12 +31,17 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Core APPS
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Ext.
+    'django_extensions',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -81,7 +86,7 @@ DATABASES = {
         'NAME': 'reservation',
         'USER': 'admin',
         'PASSWORD': 'admin',
-        'HOST': 'localhost',  # Docker dışında çalışıyorsanız localhost
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
@@ -128,3 +133,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}

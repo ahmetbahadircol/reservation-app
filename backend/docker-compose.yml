@@ -1,35 +1,34 @@
 version: '3'
 services:
-  django:
-    build:
-      context: ./python
+  postgres:
+    image: postgres:14
+    container_name: reservation_db
+    environment:
+      POSTGRES_DB: reservation_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
     ports:
-      - "8000:8000"
-#    volumes:
-#      - ./reservation_app:/app
-#    depends_on:
-#      - go-app
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend_network
+   
+  web:
+    build: ./python
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8001:8000"
+    depends_on:
+      - postgres
+    networks:
+      - backend_network
 
-#  go-app:
-#    build:
-#      context: ./go-app
-#    ports:
-#      - "8080:8080"
-#    volumes:
-#      - ./go-app:/app
-
-  db:
-      image: postgres:13
-      container_name: postgres-db
-      environment:
-        POSTGRES_DB: reservation
-        POSTGRES_USER: admin
-        POSTGRES_PASSWORD: admin
-      ports:
-        - "5432:5432"
-      networks:
-        - mynetwork
+volumes:
+  postgres_data:
 
 networks:
-  mynetwork:
+  backend_network:
     driver: bridge

@@ -86,9 +86,10 @@ WSGI_APPLICATION = 'reservation_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'reservation',
+        'NAME': 'reservation_db',
         'USER': 'admin',
         'PASSWORD': 'admin',
+        #'HOST': 'localhost',
         'HOST': 'reservation_db',
         'PORT': '5432',
     }

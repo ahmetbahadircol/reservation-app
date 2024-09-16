@@ -89,7 +89,8 @@ DATABASES = {
         'NAME': 'reservation_db',
         'USER': 'admin',
         'PASSWORD': 'admin',
-        'HOST': 'reservation_db',
+        #'HOST': 'reservation_db',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }

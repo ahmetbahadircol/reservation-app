@@ -2,16 +2,16 @@
 FROM python:3.12.4-slim
 
 # Set the working directory
-WORKDIR /app
+WORKDIR /src
 
 # Copy the project files
-COPY requirements.txt /app/
+COPY requirements.txt /src/
 
 # Install dependencies
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 
-COPY . /app
+COPY . /src
 
 # Expose the port
 EXPOSE 8000

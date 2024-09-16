@@ -14,17 +14,17 @@ services:
     networks:
       - backend_network
    
-  web:
-    build: ./python
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/code
-    ports:
-      - "8001:8000"
-    depends_on:
-      - postgres
-    networks:
-      - backend_network
+#  python-web:
+#    build: ./python
+#    command: python manage.py runserver 0.0.0.0:8000
+#    volumes:
+#      - .:/src
+#    ports:
+#      - "8001:8000"
+#    depends_on:
+#      - postgres
+#    networks:
+#      - backend_network
 
 volumes:
   postgres_data:

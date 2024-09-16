@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Car, Hotel
+from .models import Car, Hotel, Booking
 
 
 # Register your models here.
@@ -16,3 +16,8 @@ class CarAdmin(AbstractModelAdmin):
 @admin.register(Hotel)
 class HotelAdmin(AbstractModelAdmin):
     pass
+
+
+@admin.register(Booking)
+class BookingAdmin(AbstractModelAdmin):
+    list_display = ('start_datetime', 'end_datetime', 'unit')

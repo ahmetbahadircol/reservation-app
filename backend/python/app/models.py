@@ -15,25 +15,43 @@ class Unit(AbstractModel):
 
     def __str__(self) -> str:
         return self.name
+    
+    def put_id_if_name_none(self, prefix="Unit"):
+        if not self.name:
+            self.name = f"{prefix}_{self.id}"
 
 
 class Car(Unit):
-    def save(self, *args, **kwargs):
+    def pre_save(self, *args, **kwargs):
+        pass
+
+    def post_save(self, *args, **kwargs):
+        self.put_id_if_name_none("Car")
         super(Car, self).save(*args, **kwargs)
 
-        if not self.name:
-            self.name = f"Car_{self.id}"
-            super(Car, self).save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        self.pre_save(*args, **kwargs)
+
+        super(Car, self).save(*args, **kwargs)
+
+        self.post_save(*args, **kwargs)
     
 
 
 class Hotel(Unit):
-    def save(self, *args, **kwargs):
-        super(Hotel, self).save(*args, **kwargs)
+    def pre_save(self, *args, **kwargs):
+        pass
 
-        if not self.name:
-            self.name = f"Hotel_{self.id}"
-            super(Hotel, self).save(*args, **kwargs)
+    def post_save(self, *args, **kwargs):
+        self.put_id_if_name_none("Hotel")
+        super(Car, self).save(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        self.pre_save(*args, **kwargs)
+
+        super(Car, self).save(*args, **kwargs)
+
+        self.post_save(*args, **kwargs)
     
 
 class Booking(AbstractModel):

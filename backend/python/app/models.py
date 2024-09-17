@@ -19,6 +19,7 @@ class Unit(AbstractModel):
     def put_id_if_name_none(self, prefix="Unit"):
         if not self.name:
             self.name = f"{prefix}_{self.id}"
+            self.update_fields.append("name")
 
 
 class Car(Unit):
@@ -26,8 +27,9 @@ class Car(Unit):
         pass
 
     def post_save(self, *args, **kwargs):
+        self.update_fields = []
         self.put_id_if_name_none("Car")
-        super(Car, self).save(*args, **kwargs)
+        super(Car, self).save(update_fields=self.update_fields)
 
     def save(self, *args, **kwargs):
         self.pre_save(*args, **kwargs)
@@ -43,13 +45,14 @@ class Hotel(Unit):
         pass
 
     def post_save(self, *args, **kwargs):
+        self.update_fields = []
         self.put_id_if_name_none("Hotel")
-        super(Car, self).save(*args, **kwargs)
+        super(Hotel, self).save(update_fields=self.update_fields)
 
     def save(self, *args, **kwargs):
         self.pre_save(*args, **kwargs)
 
-        super(Car, self).save(*args, **kwargs)
+        super(Hotel, self).save(*args, **kwargs)
 
         self.post_save(*args, **kwargs)
     

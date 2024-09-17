@@ -9,8 +9,16 @@ class HotelListSerializer(serializers.ModelSerializer):
         read_only_fields = ["uuid",]
 
 
+class HotelSerializer(HotelListSerializer):
+    pass
+
+
 class CarListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Car
         fields = "__all__"
         read_only_fields = ["uuid",]
+
+
+class CarSerializer(CarListSerializer):
+    pass

@@ -3,6 +3,7 @@ package apiHandlers
 import (
 	"bytes"
 	"encoding/json"
+	"goAPI/apiHandlers"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -10,7 +11,7 @@ import (
 
 func TestGetAvailableleDates_Success(t *testing.T) {
 	// Geçerli bir istek gövdesi oluştur (sorted dates, no conflict)
-	requestBody := RequestBody{
+	requestBody := apiHandlers.RequestBody{
 		DaysRange:     10,
 		RequestDates:  []string{"2024-09-01 00:00:00", "2024-09-05 00:00:00"},
 		SuitableDates: []string{"2024-08-01 00:00:00", "2024-08-31 00:00:00"},
@@ -33,7 +34,7 @@ func TestGetAvailableleDates_Success(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	// Handler'ı çağır
-	handler := http.HandlerFunc(GetAvailableleDates)
+	handler := http.HandlerFunc(apiHandlers.GetAvailableleDates)
 	handler.ServeHTTP(rr, req)
 
 	// Durum kodunu kontrol et
@@ -42,7 +43,7 @@ func TestGetAvailableleDates_Success(t *testing.T) {
 	}
 
 	// Yanıtı çöz
-	var resp Response
+	var resp apiHandlers.Response
 	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
 		t.Fatalf("Could not decode response: %v", err)
 	}
@@ -63,7 +64,7 @@ func TestGetAvailableleDates_Success(t *testing.T) {
 
 func TestGetAvailableleDates_RequestDatesNotSorted(t *testing.T) {
 	// Hatalı bir istek gövdesi (request dates not sorted)
-	requestBody := RequestBody{
+	requestBody := apiHandlers.RequestBody{
 		DaysRange:     10,
 		RequestDates:  []string{"2024-09-05 00:00:00", "2024-09-01 00:00:00"},
 		SuitableDates: []string{"2024-08-01 00:00:00", "2024-08-31 00:00:00"},
@@ -86,7 +87,7 @@ func TestGetAvailableleDates_RequestDatesNotSorted(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	// Handler'ı çağır
-	handler := http.HandlerFunc(GetAvailableleDates)
+	handler := http.HandlerFunc(apiHandlers.GetAvailableleDates)
 	handler.ServeHTTP(rr, req)
 
 	// Durum kodunu kontrol et (Bad Request bekleniyor)
@@ -103,7 +104,7 @@ func TestGetAvailableleDates_RequestDatesNotSorted(t *testing.T) {
 
 func TestGetAvailableleDates_DatesConflict(t *testing.T) {
 	// Hatalı bir istek gövdesi (dates conflict)
-	requestBody := RequestBody{
+	requestBody := apiHandlers.RequestBody{
 		DaysRange:     10,
 		RequestDates:  []string{"2024-08-15 00:00:00", "2024-08-20 00:00:00"},
 		SuitableDates: []string{"2024-08-01 00:00:00", "2024-08-31 00:00:00"},
@@ -126,7 +127,7 @@ func TestGetAvailableleDates_DatesConflict(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	// Handler'ı çağır
-	handler := http.HandlerFunc(GetAvailableleDates)
+	handler := http.HandlerFunc(apiHandlers.GetAvailableleDates)
 	handler.ServeHTTP(rr, req)
 
 	// Durum kodunu kontrol et (Bad Request bekleniyor)

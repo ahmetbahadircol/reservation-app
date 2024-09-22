@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from app.views import CarListView, CarView, HotelListView, HotelView
+from app.views import BookingListView, BookingView, CarListView, CarView, HotelListView, HotelView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,4 +25,6 @@ urlpatterns = [
     path('api/hotels/<str:uuid>', HotelView.as_view(), name='hotel'),
     path('api/cars', CarListView.as_view(), name='cars_list'),
     path('api/cars/<str:uuid>', CarView.as_view(), name='car'),
+    path('api/bookings', BookingListView.as_view(), name='booking_list'),
+    path('api/bookings/<str:uuid>', BookingView.as_view(), name='booking'),
 ]

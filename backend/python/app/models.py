@@ -1,5 +1,7 @@
 from django.db import models
 import uuid
+from datetime import timedelta
+from reservation_app.utils import now
 
 
 class AbstractModel(models.Model):
@@ -58,6 +60,32 @@ class Hotel(Unit):
     
 
 class Booking(AbstractModel):
-    start_datetime = models.DateTimeField()
-    end_datetime = models.DateTimeField()
+    #TODO: Spesifik bir booking objesi için start ve end date aralığındaki günlerin listesini çıkar. Ardından 30 günlük period içinde o günlerinde dışındaki günleri liste halinde dön.
+    import requests
+
+
+    BOOKING_INTERVAL_DAY = 30
+    start_date = models.DateField()
+    end_date = models.DateField()
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+
+    @property
+    def days(self):
+        return self.BOOKING_INTERVAL_DAY
+    
+    @property
+    def calculate_interval_date_list(self):
+        return [(now() + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(self.days)]
+    
+    @property
+    def get_free_dates(self):
+        qs = Booking.objects.filter(start_date__gte=now(), end_date__lte=now() + timedelta(days=self.BOOKING_INTERVAL_DAY), unit=self.unit).values_list()
+        return list(qs)
+    
+    @property
+    def get_available_days(self, request_dates: list[str]):
+        payload = {
+            "days": self.days,
+            "request_days": request_dates,
+
+        }

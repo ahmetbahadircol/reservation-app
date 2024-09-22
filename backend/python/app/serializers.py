@@ -1,4 +1,4 @@
-from .models import Car, Hotel
+from .models import Booking, Car, Hotel
 from rest_framework import serializers
 
 
@@ -21,4 +21,15 @@ class CarListSerializer(serializers.ModelSerializer):
 
 
 class CarSerializer(CarListSerializer):
+    pass
+
+
+class BookingListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        fields = "__all__"
+        read_only_fields = ["uuid", "days"]
+
+
+class BookingSerializer(BookingListSerializer):
     pass

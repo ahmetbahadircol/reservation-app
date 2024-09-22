@@ -20,4 +20,4 @@ class HotelAdmin(AbstractModelAdmin):
 
 @admin.register(Booking)
 class BookingAdmin(AbstractModelAdmin):
-    list_display = ('start_datetime', 'end_datetime', 'unit')
+    list_display = ('start_date', 'end_date', 'unit')

@@ -125,7 +125,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = True # Since it is a just portfolia project I don't have to use timezones
 
 
 # Static files (CSS, JavaScript, Images)

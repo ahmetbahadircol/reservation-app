@@ -1,13 +1,16 @@
-# This workflow will build a Golang project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+# This workflow will build a Golang project only when files in goAPI change
 
 name: Go
 
 on:
   push:
     branches: [ "master" ]
+    paths:
+      - 'backend/goAPI/**'  # Only trigger when files in goAPI change
   pull_request:
     branches: [ "master" ]
+    paths:
+      - 'backend/goAPI/**'  # Only trigger when files in goAPI change
 
 jobs:
   build:
@@ -22,4 +25,4 @@ jobs:
     
     - name: Run tests
       run: go test -v ./test
-      working-directory: ./backend/goAPI  # Set the working directory here
+      working-directory: ./backend/goAPI

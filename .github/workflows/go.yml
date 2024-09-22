@@ -22,7 +22,7 @@ jobs:
         go-version: '1.22.6'
     
     - name: Set working directory to goAPI
-        working-directory: ./backend/goAPI
+      working-directory: ./backend/goAPI
 
     - name: Test
       run: go test -v ./test

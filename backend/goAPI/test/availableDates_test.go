@@ -10,20 +10,17 @@ import (
 )
 
 func TestGetAvailableleDates_Success(t *testing.T) {
-	// Geçerli bir istek gövdesi oluştur (sorted dates, no conflict)
 	requestBody := apiHandlers.RequestBody{
 		DaysRange:     10,
 		RequestDates:  []string{"2024-09-01", "2024-09-05"}, // Changed to date format
 		SuitableDates: []string{"2024-08-01", "2024-08-31"}, // Changed to date format
 	}
 
-	// JSON'a çevir
 	jsonBody, err := json.Marshal(requestBody)
 	if err != nil {
 		t.Fatalf("Could not marshal request body: %v", err)
 	}
 
-	// POST isteği oluştur
 	req, err := http.NewRequest("POST", "/availableDates", bytes.NewBuffer(jsonBody))
 	if err != nil {
 		t.Fatalf("Could not create request: %v", err)

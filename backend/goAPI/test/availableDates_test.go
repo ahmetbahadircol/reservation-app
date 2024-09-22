@@ -13,8 +13,8 @@ func TestGetAvailableleDates_Success(t *testing.T) {
 	// Geçerli bir istek gövdesi oluştur (sorted dates, no conflict)
 	requestBody := apiHandlers.RequestBody{
 		DaysRange:     10,
-		RequestDates:  []string{"2024-09-01 00:00:00", "2024-09-05 00:00:00"},
-		SuitableDates: []string{"2024-08-01 00:00:00", "2024-08-31 00:00:00"},
+		RequestDates:  []string{"2024-09-01", "2024-09-05"}, // Changed to date format
+		SuitableDates: []string{"2024-08-01", "2024-08-31"}, // Changed to date format
 	}
 
 	// JSON'a çevir
@@ -49,8 +49,8 @@ func TestGetAvailableleDates_Success(t *testing.T) {
 	}
 
 	// Yanıt içeriğini kontrol et
-	expectedFirstDate := "2024-09-01 00:00:00"
-	expectedSecondDate := "2024-09-05 00:00:00"
+	expectedFirstDate := "2024-09-01"
+	expectedSecondDate := "2024-09-05"
 	if resp.FirstDate != expectedFirstDate {
 		t.Errorf("Expected FirstDate %v, got %v", expectedFirstDate, resp.FirstDate)
 	}
@@ -66,8 +66,8 @@ func TestGetAvailableleDates_RequestDatesNotSorted(t *testing.T) {
 	// Hatalı bir istek gövdesi (request dates not sorted)
 	requestBody := apiHandlers.RequestBody{
 		DaysRange:     10,
-		RequestDates:  []string{"2024-09-05 00:00:00", "2024-09-01 00:00:00"},
-		SuitableDates: []string{"2024-08-01 00:00:00", "2024-08-31 00:00:00"},
+		RequestDates:  []string{"2024-09-05", "2024-09-01"}, // Changed to date format
+		SuitableDates: []string{"2024-08-01", "2024-08-31"}, // Changed to date format
 	}
 
 	// JSON'a çevir
@@ -106,8 +106,8 @@ func TestGetAvailableleDates_DatesConflict(t *testing.T) {
 	// Hatalı bir istek gövdesi (dates conflict)
 	requestBody := apiHandlers.RequestBody{
 		DaysRange:     10,
-		RequestDates:  []string{"2024-08-15 00:00:00", "2024-08-20 00:00:00"},
-		SuitableDates: []string{"2024-08-01 00:00:00", "2024-08-31 00:00:00"},
+		RequestDates:  []string{"2024-08-15", "2024-08-20"}, // Changed to date format
+		SuitableDates: []string{"2024-08-01", "2024-08-31"}, // Changed to date format
 	}
 
 	// JSON'a çevir

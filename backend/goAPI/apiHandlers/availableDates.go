@@ -19,7 +19,7 @@ type Response struct {
 	MaxDate    string `json:"max_date"`
 }
 
-var layout = "2006-01-02 15:04:05"
+var layout = "2006-01-02"
 
 func isSorted(dates []string) (bool, error) {
 	for i := 1; i < len(dates); i++ {

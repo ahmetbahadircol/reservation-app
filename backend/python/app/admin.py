@@ -17,7 +17,8 @@ class CarAdmin(AbstractModelAdmin):
 class HotelAdmin(AbstractModelAdmin):
     pass
 
-
+"""
 @admin.register(Booking)
 class BookingAdmin(AbstractModelAdmin):
     list_display = ('start_date', 'end_date', 'unit')
+"""

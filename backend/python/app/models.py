@@ -1,7 +1,9 @@
 from django.db import models
 import uuid
-from datetime import timedelta
+from datetime import timedelta, datetime
+from app.internal_api.api_functions import get_available_dates_for_unit
 from reservation_app.utils import now
+from functools import lru_cache
 
 
 class AbstractModel(models.Model):
@@ -22,6 +24,33 @@ class Unit(AbstractModel):
         if not self.name:
             self.name = f"{prefix}_{self.id}"
             self.update_fields.append("name")
+
+    @property
+    def bookings(self):
+        return Booking.objects.filter(unit=self)
+
+    
+    @property
+    def calculate_total_dates(self) -> list[datetime.date]:
+        return [(now().date() + timedelta(days=i)) for i in range(Booking.BOOKING_INTERVAL_DAY)]
+    
+    @property
+    def busy_dates(self) -> list[datetime.date]:
+        return self.bookings.filter(res_date__range=(now().date(), now() + timedelta(days=Booking.BOOKING_INTERVAL_DAY))).values_list("res_date", flat=True)
+    
+    @property
+    def calculate_available_dates(self) -> list[datetime.date]:
+        return sorted(list(set(self.calculate_total_dates) - set(self.busy_dates)))
+    
+    @lru_cache(maxsize=None)
+    def get_available_dates(self, request_dates: list[datetime.date]):
+        response = get_available_dates_for_unit(request_dates=request_dates, suitable_dates=self.calculate_available_dates, days=Booking.BOOKING_INTERVAL_DAY)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise ValueError(f"go API has returned {response.status_code}: {response.json()}")
+        
+
 
 
 class Car(Unit):
@@ -60,32 +89,10 @@ class Hotel(Unit):
     
 
 class Booking(AbstractModel):
-    #TODO: Spesifik bir booking objesi için start ve end date aralığındaki günlerin listesini çıkar. Ardından 30 günlük period içinde o günlerinde dışındaki günleri liste halinde dön.
-    import requests
-
-
     BOOKING_INTERVAL_DAY = 30
-    start_date = models.DateField()
-    end_date = models.DateField()
+    res_date = models.DateField()
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
 
     @property
-    def days(self):
+    def days(self) -> int:
         return self.BOOKING_INTERVAL_DAY
-    
-    @property
-    def calculate_interval_date_list(self):
-        return [(now() + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(self.days)]
-    
-    @property
-    def get_free_dates(self):
-        qs = Booking.objects.filter(start_date__gte=now(), end_date__lte=now() + timedelta(days=self.BOOKING_INTERVAL_DAY), unit=self.unit).values_list()
-        return list(qs)
-    
-    @property
-    def get_available_days(self, request_dates: list[str]):
-        payload = {
-            "days": self.days,
-            "request_days": request_dates,
-
-        }

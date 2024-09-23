@@ -6,4 +6,4 @@ def tz():
 
 def now():   
     current_local_time = timezone.now().astimezone(tz())
-    return current_local_time.strftime("%Y-%m-%d")
+    return current_local_time

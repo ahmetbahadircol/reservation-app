@@ -62,11 +62,17 @@ class MultiBookingCreateSerializer(serializers.Serializer):
         attrs = super().validate(attrs)
         start_date = attrs["start_date"]
         end_date = attrs["end_date"]
+
+        if start_date > end_date:
+            raise serializers.ValidationError("start_date cannot be bigger than end_date.")
+
+        unit = self.get_unit(attrs["unit"])
         # TODO: unhashable type: 'list'
         try:
-            self.get_unit(attrs["unit"]).get_available_dates(self.get_dates_between_two_dates(start_date, end_date))
+            unit.get_available_dates(self.get_dates_between_two_dates(start_date, end_date))
         except ValueError as e:
             raise serializers.ValidationError(e)
+        print("Succesfully fetched from GO")
         return attrs
     
 

@@ -42,8 +42,9 @@ class Unit(AbstractModel):
     def calculate_available_dates(self) -> list[datetime.date]:
         return sorted(list(set(self.calculate_total_dates) - set(self.busy_dates)))
     
-    @lru_cache(maxsize=None)
+    #@lru_cache(maxsize=None) ASK TO STACKOVERFLOW FOR LIST NOT HASHABLE IF CACHE IS USED!!!
     def get_available_dates(self, request_dates: list[datetime.date]):
+        request_dates = list(request_dates)
         response = get_available_dates_for_unit(request_dates=request_dates, suitable_dates=self.calculate_available_dates, days=Booking.BOOKING_INTERVAL_DAY)
         if response.status_code == 200:
             return response.json()

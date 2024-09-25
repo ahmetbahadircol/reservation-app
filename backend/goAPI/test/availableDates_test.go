@@ -12,7 +12,7 @@ import (
 func TestGetAvailableleDates_Success(t *testing.T) {
 	requestBody := apiHandlers.RequestBody{
 		DaysRange:     30,
-		RequestDates:  []string{"2024-10-01", "2024-10-02", "2024-10-03"},
+		RequestDates:  []string{"2024-09-01", "2024-09-05"},
 		SuitableDates: []string{"2024-08-01", "2024-08-31"},
 	}
 
@@ -81,7 +81,7 @@ func TestGetAvailableleDates_RequestDatesNotSorted(t *testing.T) {
 		t.Errorf("Expected status code 400, got %v", status)
 	}
 
-	expectedMessage := "Request dates are not sorted."
+	expectedMessage := "{\"error\":\"Request dates are not sorted.\"}"
 	if rr.Body.String() != expectedMessage+"\n" {
 		t.Errorf("Expected error message %v, got %v", expectedMessage, rr.Body.String())
 	}
@@ -114,7 +114,7 @@ func TestGetAvailableleDates_DatesConflict(t *testing.T) {
 		t.Errorf("Expected status code 400, got %v", status)
 	}
 
-	expectedMessage := "Suitable and Requested dates overlap."
+	expectedMessage := "{\"error\":\"Suitable and Requested dates overlap.\"}"
 	if rr.Body.String() != expectedMessage+"\n" {
 		t.Errorf("Expected error message %v, got %v", expectedMessage, rr.Body.String())
 	}

@@ -95,21 +95,21 @@ func validate(w http.ResponseWriter, r *http.Request) (*RequestBody, error) {
 	// Check if both dates list is sorted
 	flag1, err1 := isSorted(requestBody.RequestDates)
 	if err1 != nil {
-		http.Error(w, err1.Error(), http.StatusBadRequest)
+		utils.HandleError(w, err1.Error(), http.StatusBadRequest)
 		return nil, err1
 	}
 	if !flag1 {
-		http.Error(w, "Request dates are not sorted.", http.StatusBadRequest)
+		utils.HandleError(w, "Request dates are not sorted.", http.StatusBadRequest)
 		return nil, nil
 	}
 
 	flag2, err2 := isSorted(requestBody.SuitableDates)
 	if err2 != nil {
-		http.Error(w, err2.Error(), http.StatusBadRequest)
+		utils.HandleError(w, err2.Error(), http.StatusBadRequest)
 		return nil, err2
 	}
 	if !flag2 {
-		http.Error(w, "Suitable dates are not sorted.", http.StatusBadRequest)
+		utils.HandleError(w, "Suitable dates are not sorted.", http.StatusBadRequest)
 		return nil, nil
 	}
 
@@ -146,6 +146,6 @@ func GetAvailableleDates(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 
 	} else {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		utils.HandleError(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }

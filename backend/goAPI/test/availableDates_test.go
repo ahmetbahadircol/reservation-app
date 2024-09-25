@@ -114,7 +114,7 @@ func TestGetAvailableleDates_DatesConflict(t *testing.T) {
 		t.Errorf("Expected status code 400, got %v", status)
 	}
 
-	expectedMessage := "{\"error\":\"Suitable and Requested dates overlap.\"}"
+	expectedMessage := "{\"error\":\"Busy and Requested dates overlap.\"}"
 	if rr.Body.String() != expectedMessage+"\n" {
 		t.Errorf("Expected error message %v, got %v", expectedMessage, rr.Body.String())
 	}

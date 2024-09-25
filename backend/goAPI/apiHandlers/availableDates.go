@@ -2,6 +2,7 @@ package apiHandlers
 
 import (
 	"encoding/json"
+	"goAPI/utils"
 	"net/http"
 	"time"
 )
@@ -87,7 +88,7 @@ func validate(w http.ResponseWriter, r *http.Request) (*RequestBody, error) {
 	var requestBody RequestBody
 	err := json.NewDecoder(r.Body).Decode(&requestBody)
 	if err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		utils.HandleError(w, "Invalid request body", http.StatusBadRequest)
 		return nil, err
 	}
 
@@ -119,7 +120,7 @@ func validate(w http.ResponseWriter, r *http.Request) (*RequestBody, error) {
 		return nil, err3
 	}
 	if !flag3 {
-		http.Error(w, "Suitable and Requested dates overlap.", http.StatusBadRequest)
+		utils.HandleError(w, "Suitable and Requested dates overlap.", http.StatusBadRequest)
 		return nil, nil
 	}
 

@@ -11,9 +11,9 @@ import (
 
 func TestGetAvailableleDates_Success(t *testing.T) {
 	requestBody := apiHandlers.RequestBody{
-		DaysRange:     10,
-		RequestDates:  []string{"2024-09-01", "2024-09-05"}, // Changed to date format
-		SuitableDates: []string{"2024-08-01", "2024-08-31"}, // Changed to date format
+		DaysRange:     30,
+		RequestDates:  []string{"2024-10-01", "2024-10-02", "2024-10-03"},
+		SuitableDates: []string{"2024-08-01", "2024-08-31"},
 	}
 
 	jsonBody, err := json.Marshal(requestBody)
@@ -57,8 +57,8 @@ func TestGetAvailableleDates_Success(t *testing.T) {
 func TestGetAvailableleDates_RequestDatesNotSorted(t *testing.T) {
 	requestBody := apiHandlers.RequestBody{
 		DaysRange:     10,
-		RequestDates:  []string{"2024-09-05", "2024-09-01"}, // Changed to date format
-		SuitableDates: []string{"2024-08-01", "2024-08-31"}, // Changed to date format
+		RequestDates:  []string{"2024-09-05", "2024-09-01"},
+		SuitableDates: []string{"2024-08-01", "2024-08-31"},
 	}
 
 	jsonBody, err := json.Marshal(requestBody)
@@ -90,8 +90,8 @@ func TestGetAvailableleDates_RequestDatesNotSorted(t *testing.T) {
 func TestGetAvailableleDates_DatesConflict(t *testing.T) {
 	requestBody := apiHandlers.RequestBody{
 		DaysRange:     10,
-		RequestDates:  []string{"2024-08-15", "2024-08-20"}, // Changed to date format
-		SuitableDates: []string{"2024-08-01", "2024-08-31"}, // Changed to date format
+		RequestDates:  []string{"2024-08-15", "2024-08-20"},
+		SuitableDates: []string{"2024-08-01", "2024-08-31"},
 	}
 
 	jsonBody, err := json.Marshal(requestBody)

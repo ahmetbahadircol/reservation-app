@@ -3,14 +3,14 @@ from rest_framework import serializers
 
 class AvailableDatesSerializer(serializers.Serializer):
     days = serializers.IntegerField()
-    request_dates = serializers.SerializerMethodField()
-    suitable_dates = serializers.SerializerMethodField()
+    request_dates = serializers.ListField(child=serializers.DateField())
+    busy_dates = serializers.ListField(child=serializers.DateField())
+
     class Meta:
-        fields = "__all__"
+        fields = ["days", "request_dates", "busy_dates"]
 
     def get_request_dates(self, obj):
-        breakpoint()
-        return obj.start_date.strftime('%y-%m-%d') if obj.start_date else None
+        return obj.request_dates.strftime("%y-%m-%d") if obj.request_dates else None
 
-    def get_suitable_dates(self, obj):
-        return obj.end_date.strftime('%y-%m-%d') if obj.end_date else None
+    def get_busy_dates(self, obj):
+        return obj.busy_dates.strftime("%y-%m-%d") if obj.busy_dates else None

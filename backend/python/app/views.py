@@ -1,7 +1,15 @@
 from rest_framework import generics, views, response, status
 from rest_framework.permissions import AllowAny
 from .models import Booking, Car, Hotel
-from .serializers import BookingListSerializer, BookingSerializer, CarListSerializer, CarSerializer, HotelListSerializer, HotelSerializer, MultiBookingCreateSerializer
+from .serializers import (
+    BookingListSerializer,
+    BookingSerializer,
+    CarListSerializer,
+    CarSerializer,
+    HotelListSerializer,
+    HotelSerializer,
+    MultiBookingCreateSerializer,
+)
 
 
 class HotelListView(generics.ListCreateAPIView):
@@ -41,14 +49,11 @@ class BookingView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class MultiBookingCreateView(views.APIView):
-    permission_classes = [AllowAny] 
+    permission_classes = [AllowAny]
 
     def post(self, request):
         ser = MultiBookingCreateSerializer(data=request.data)
         if ser.is_valid():
             ser.save()
-            breakpoint()
             return response.Response(status=status.HTTP_201_CREATED)
         return response.Response(ser.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        

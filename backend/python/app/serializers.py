@@ -1,4 +1,6 @@
 from datetime import timedelta, date
+
+from reservation_app.utils import now
 from .models import Booking, Car, Hotel, Unit
 from rest_framework import serializers
 from django.db import transaction
@@ -8,7 +10,9 @@ class HotelListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hotel
         fields = "__all__"
-        read_only_fields = ["uuid",]
+        read_only_fields = [
+            "uuid",
+        ]
 
 
 class HotelSerializer(HotelListSerializer):
@@ -19,7 +23,9 @@ class CarListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Car
         fields = "__all__"
-        read_only_fields = ["uuid",]
+        read_only_fields = [
+            "uuid",
+        ]
 
 
 class CarSerializer(CarListSerializer):
@@ -28,10 +34,11 @@ class CarSerializer(CarListSerializer):
 
 class BookingListSerializer(serializers.ModelSerializer):
     res_date = serializers.DateField()
+
     class Meta:
         model = Booking
         read_only_fields = ["uuid", "days"]
-        fields = ["res_date"] + read_only_fields
+        fields = ["res_date", "unit"] + read_only_fields
 
 
 class BookingSerializer(BookingListSerializer):
@@ -45,15 +52,17 @@ class MultiBookingCreateSerializer(serializers.Serializer):
 
     class Meta:
         fields = "__all__"
-        read_only_fields = ["uuid",]
+        read_only_fields = [
+            "uuid",
+        ]
 
     def get_unit(self, id):
         return Unit.objects.get(id=id)
 
-    def get_dates_between_two_dates(self, date1: date, date2: date):
+    def get_dates_between_two_dates(self, date1: date, date2: date) -> list[date]:
         res = list()
         res.append(date1)
-        while date1 <= date2:
+        while date1 < date2:
             date1 += timedelta(days=1)
             res.append(date1)
         return res
@@ -64,17 +73,30 @@ class MultiBookingCreateSerializer(serializers.Serializer):
         end_date = attrs["end_date"]
 
         if start_date > end_date:
-            raise serializers.ValidationError("start_date cannot be bigger than end_date.")
+            raise serializers.ValidationError(
+                "start_date cannot be bigger than end_date."
+            )
+
+        if start_date < now().date():
+            raise serializers.ValidationError("start_date cannot be in the past.")
+
+        if (
+            len(self.get_dates_between_two_dates(start_date, end_date))
+            > Booking.BOOKING_INTERVAL_DAY
+        ):
+            raise serializers.ValidationError(
+                f"Date range cannot be longer than {Booking.BOOKING_INTERVAL_DAY} days."
+            )
 
         unit = self.get_unit(attrs["unit"])
-        # TODO: unhashable type: 'list'
         try:
-            unit.get_available_dates(self.get_dates_between_two_dates(start_date, end_date))
+            unit.get_available_dates(
+                self.get_dates_between_two_dates(start_date, end_date)
+            )
         except ValueError as e:
             raise serializers.ValidationError(e)
         print("Succesfully fetched from GO")
         return attrs
-    
 
     @transaction.atomic
     def create(self, validated_data):

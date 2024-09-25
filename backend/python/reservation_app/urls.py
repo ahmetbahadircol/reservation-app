@@ -14,18 +14,27 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path
 
-from app.views import BookingListView, BookingView, CarListView, CarView, HotelListView, HotelView, MultiBookingCreateView
+from app.views import (
+    BookingListView,
+    BookingView,
+    CarListView,
+    CarView,
+    HotelListView,
+    HotelView,
+    MultiBookingCreateView,
+)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/hotels', HotelListView.as_view(), name='hotels_list'),
-    path('api/hotels/<str:uuid>', HotelView.as_view(), name='hotel'),
-    path('api/cars', CarListView.as_view(), name='cars_list'),
-    path('api/cars/<str:uuid>', CarView.as_view(), name='car'),
-    path('api/bookings', BookingListView.as_view(), name='booking_list'),
-    path('api/bookings/<str:uuid>', BookingView.as_view(), name='booking'),
-    path('api/bulk-bookings', MultiBookingCreateView.as_view(), name='bulk_bookings'),
+    path("admin/", admin.site.urls),
+    path("api/hotels", HotelListView.as_view(), name="hotels_list"),
+    path("api/hotels/<str:uuid>", HotelView.as_view(), name="hotel"),
+    path("api/cars", CarListView.as_view(), name="cars_list"),
+    path("api/cars/<str:uuid>", CarView.as_view(), name="car"),
+    path("api/bookings", BookingListView.as_view(), name="booking_list"),
+    path("api/bookings/<str:uuid>", BookingView.as_view(), name="booking"),
+    path("api/bulk-bookings", MultiBookingCreateView.as_view(), name="bulk_bookings"),
 ]

@@ -5,8 +5,10 @@ from .models import Car, Hotel, Booking
 
 # Register your models here.
 
+
 class AbstractModelAdmin(admin.ModelAdmin):
     readonly_fields = ("uuid",)
+
 
 @admin.register(Car)
 class CarAdmin(AbstractModelAdmin):
@@ -16,6 +18,7 @@ class CarAdmin(AbstractModelAdmin):
 @admin.register(Hotel)
 class HotelAdmin(AbstractModelAdmin):
     pass
+
 
 """
 @admin.register(Booking)

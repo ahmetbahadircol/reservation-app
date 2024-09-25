@@ -19,7 +19,7 @@ class Unit(AbstractModel):
 
     def __str__(self) -> str:
         return self.name
-    
+
     def put_id_if_name_none(self, prefix="Unit"):
         if not self.name:
             self.name = f"{prefix}_{self.id}"
@@ -29,29 +29,33 @@ class Unit(AbstractModel):
     def bookings(self):
         return Booking.objects.filter(unit=self)
 
-    
-    @property
-    def calculate_total_dates(self) -> list[datetime.date]:
-        return [(now().date() + timedelta(days=i)) for i in range(Booking.BOOKING_INTERVAL_DAY)]
-    
     @property
     def busy_dates(self) -> list[datetime.date]:
-        return self.bookings.filter(res_date__range=(now().date(), now() + timedelta(days=Booking.BOOKING_INTERVAL_DAY))).values_list("res_date", flat=True)
-    
-    @property
-    def calculate_available_dates(self) -> list[datetime.date]:
-        return sorted(list(set(self.calculate_total_dates) - set(self.busy_dates)))
-    
-    #@lru_cache(maxsize=None) ASK TO STACKOVERFLOW FOR LIST NOT HASHABLE IF CACHE IS USED!!!
+        return (
+            self.bookings.filter(
+                res_date__range=(
+                    now().date(),
+                    now() + timedelta(days=Booking.BOOKING_INTERVAL_DAY),
+                )
+            )
+            .order_by("res_date")
+            .values_list("res_date", flat=True)
+        )
+
+    # @lru_cache(maxsize=None) ASK TO STACKOVERFLOW FOR LIST NOT HASHABLE IF CACHE IS USED!!!
     def get_available_dates(self, request_dates: list[datetime.date]):
-        request_dates = list(request_dates)
-        response = get_available_dates_for_unit(request_dates=request_dates, suitable_dates=self.calculate_available_dates, days=Booking.BOOKING_INTERVAL_DAY)
+        response = get_available_dates_for_unit(
+            request_dates=request_dates,
+            busy_dates=self.busy_dates,
+            days=Booking.BOOKING_INTERVAL_DAY,
+        )
         if response.status_code == 200:
             return response.json()
         else:
-            raise ValueError(f"go API has returned {response.status_code}: {response.json()}")
-        
 
+            raise ValueError(
+                f"go API has returned {response.status_code}: {response.json()}"
+            )
 
 
 class Car(Unit):
@@ -69,7 +73,6 @@ class Car(Unit):
         super(Car, self).save(*args, **kwargs)
 
         self.post_save(*args, **kwargs)
-    
 
 
 class Hotel(Unit):
@@ -87,7 +90,7 @@ class Hotel(Unit):
         super(Hotel, self).save(*args, **kwargs)
 
         self.post_save(*args, **kwargs)
-    
+
 
 class Booking(AbstractModel):
     BOOKING_INTERVAL_DAY = 30

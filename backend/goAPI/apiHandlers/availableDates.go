@@ -8,9 +8,9 @@ import (
 )
 
 type RequestBody struct {
-	DaysRange     int      `json:"days_range"`
-	RequestDates  []string `json:"request_dates"`
-	SuitableDates []string `json:"suitable_dates"`
+	DaysRange    int      `json:"days"`
+	RequestDates []string `json:"request_dates"`
+	BusyDates    []string `json:"busy_dates"`
 }
 
 type Response struct {
@@ -41,9 +41,13 @@ func isSorted(dates []string) (bool, error) {
 	return true, nil
 }
 
-func checkDatesNotConflict(s_dates []string, r_dates []string) (bool, error) {
-	s_dates_first, err1 := time.Parse(layout, s_dates[0])
-	s_dates_last, err3 := time.Parse(layout, s_dates[len(s_dates)-1])
+func checkDatesNotConflict(b_dates []string, r_dates []string) (bool, error) {
+	// If there is no any reservation in time interval, there is no need to check overlap.
+	if len(b_dates) == 0 || len(r_dates) == 0 { // It is impossible to r_date is empty because of Django's validations but it is checked because of panic: runtime error
+		return true, nil
+	}
+	b_dates_first, err1 := time.Parse(layout, b_dates[0])
+	b_dates_last, err3 := time.Parse(layout, b_dates[len(b_dates)-1])
 	r_dates_last, err2 := time.Parse(layout, r_dates[len(r_dates)-1])
 	r_dates_first, err4 := time.Parse(layout, r_dates[0])
 
@@ -57,17 +61,17 @@ func checkDatesNotConflict(s_dates []string, r_dates []string) (bool, error) {
 		return false, err4
 	}
 	// Requested dates can be before the sutiable dates
-	if r_dates_last.Before(s_dates_first) {
+	if r_dates_last.Before(b_dates_first) {
 		return true, nil
 	}
 	// Requested dates can be after the sutiable dates
-	if s_dates_last.Before(r_dates_first) {
+	if b_dates_last.Before(r_dates_first) {
 		return true, nil
 	}
 	// Requested dates can be between the sutiable dates
-	for i := 0; i < len(s_dates)-1; i++ {
-		curr, err5 := time.Parse(layout, s_dates[i])
-		aft, err6 := time.Parse(layout, s_dates[i+1])
+	for i := 0; i < len(b_dates)-1; i++ {
+		curr, err5 := time.Parse(layout, b_dates[i])
+		aft, err6 := time.Parse(layout, b_dates[i+1])
 
 		if err5 != nil {
 			return false, err5
@@ -81,6 +85,7 @@ func checkDatesNotConflict(s_dates []string, r_dates []string) (bool, error) {
 			}
 		}
 	}
+
 	return false, nil
 }
 
@@ -103,24 +108,24 @@ func validate(w http.ResponseWriter, r *http.Request) (*RequestBody, error) {
 		return nil, nil
 	}
 
-	flag2, err2 := isSorted(requestBody.SuitableDates)
+	flag2, err2 := isSorted(requestBody.BusyDates)
 	if err2 != nil {
 		utils.HandleError(w, err2.Error(), http.StatusBadRequest)
 		return nil, err2
 	}
 	if !flag2 {
-		utils.HandleError(w, "Suitable dates are not sorted.", http.StatusBadRequest)
+		utils.HandleError(w, "Busy dates are not sorted.", http.StatusBadRequest)
 		return nil, nil
 	}
 
 	// Check if both dates not conflict
-	flag3, err3 := checkDatesNotConflict(requestBody.RequestDates, requestBody.SuitableDates)
+	flag3, err3 := checkDatesNotConflict(requestBody.RequestDates, requestBody.BusyDates)
 	if err3 != nil {
-		http.Error(w, err3.Error(), http.StatusBadRequest)
+		utils.HandleError(w, err3.Error(), http.StatusBadRequest)
 		return nil, err3
 	}
 	if !flag3 {
-		utils.HandleError(w, "Suitable and Requested dates overlap.", http.StatusBadRequest)
+		utils.HandleError(w, "Busy and Requested dates overlap.", http.StatusBadRequest)
 		return nil, nil
 	}
 

@@ -42,8 +42,13 @@ class Unit(AbstractModel):
             .values_list("res_date", flat=True)
         )
 
-    # @lru_cache(maxsize=None) ASK TO STACKOVERFLOW FOR LIST NOT HASHABLE IF CACHE IS USED!!!
-    def get_available_dates(self, request_dates: list[datetime.date]):
+    @lru_cache(maxsize=None)
+    def get_available_dates(
+        self, request_dates: tuple[datetime.date]
+    ):  # Take the request_dates as tuple for hashing
+        request_dates = sorted(
+            list(request_dates)
+        )  # Because lists are not hashable, therefore we can't use caching
         response = get_available_dates_for_unit(
             request_dates=request_dates,
             busy_dates=self.busy_dates,

@@ -91,7 +91,7 @@ class MultiBookingCreateSerializer(serializers.Serializer):
         unit = self.get_unit(attrs["unit"])
         try:
             unit.get_available_dates(
-                self.get_dates_between_two_dates(start_date, end_date)
+                tuple(self.get_dates_between_two_dates(start_date, end_date))
             )
         except ValueError as e:
             raise serializers.ValidationError(e)

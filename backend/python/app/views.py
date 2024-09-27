@@ -10,11 +10,13 @@ from .serializers import (
     HotelSerializer,
     MultiBookingCreateSerializer,
 )
+from rest_framework.permissions import IsAuthenticated
 
 
 class HotelListView(generics.ListCreateAPIView):
     queryset = Hotel.objects.get_queryset()
     serializer_class = HotelListSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class HotelView(generics.RetrieveUpdateDestroyAPIView):
@@ -22,11 +24,13 @@ class HotelView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = HotelSerializer
     lookup_field = "uuid"
     lookup_url_kwarg = "uuid"
+    permission_classes = [IsAuthenticated]
 
 
 class CarListView(generics.ListCreateAPIView):
     queryset = Car.objects.get_queryset()
     serializer_class = CarListSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class CarView(generics.RetrieveUpdateDestroyAPIView):
@@ -34,11 +38,13 @@ class CarView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CarSerializer
     lookup_field = "uuid"
     lookup_url_kwarg = "uuid"
+    permission_classes = [IsAuthenticated]
 
 
 class BookingListView(generics.ListCreateAPIView):
     queryset = Booking.objects.get_queryset()
     serializer_class = BookingListSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class BookingView(generics.RetrieveUpdateDestroyAPIView):
@@ -46,10 +52,11 @@ class BookingView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BookingSerializer
     lookup_field = "uuid"
     lookup_url_kwarg = "uuid"
+    permission_classes = [IsAuthenticated]
 
 
 class MultiBookingCreateView(views.APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         ser = MultiBookingCreateSerializer(data=request.data)

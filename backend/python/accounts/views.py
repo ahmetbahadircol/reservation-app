@@ -11,7 +11,7 @@ def register(request):
             user = form.save()
             login(request, user)
             messages.success(request, "Registration successful.")
-            return redirect("")
+            return redirect("home")
     else:
         form = UserCreationForm()
     return render(request, "accounts/register.html", {"form": form})

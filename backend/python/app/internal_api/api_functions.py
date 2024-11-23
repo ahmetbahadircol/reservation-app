@@ -26,6 +26,7 @@ def call_go_microservice(jwt_token):
 def get_available_dates_for_unit(
     request_dates: list[datetime.date], busy_dates: list[datetime.date], days: int
 ) -> requests.Response:
+    print("Sending request ------------")
     payload = {
         "days": days,
         "request_dates": request_dates,

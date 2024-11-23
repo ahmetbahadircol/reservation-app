@@ -2,6 +2,7 @@ package apiHandlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"goAPI/utils"
 	"net/http"
 	"time"
@@ -147,6 +148,7 @@ func GetAvailableleDates(w http.ResponseWriter, r *http.Request) {
 			Message:    "Success!",
 		}
 
+		fmt.Println("GO Internal API is called!!!")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(response)
 

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework_simplejwt",
     # Ext.
     "django_extensions",
     "rest_framework",
@@ -91,8 +92,8 @@ DATABASES = {
         "NAME": "reservation_db",
         "USER": "admin",
         "PASSWORD": "admin",
-        #'HOST': 'reservation_db',
-        "HOST": "localhost",
+        "HOST": "reservation_db",
+        # "HOST": "localhost",
         "PORT": "5432",
     }
 }

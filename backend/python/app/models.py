@@ -3,7 +3,6 @@ import uuid
 from datetime import timedelta, datetime
 from app.internal_api.api_functions import get_available_dates_for_unit
 from reservation_app.utils import now
-from functools import lru_cache
 
 
 class AbstractModel(models.Model):
@@ -42,10 +41,10 @@ class Unit(AbstractModel):
             .values_list("res_date", flat=True)
         )
 
-    @lru_cache(maxsize=None)
     def get_available_dates(
         self, request_dates: tuple[datetime.date]
     ):  # Take the request_dates as tuple for hashing
+        # TODO: There is sometihng with this shit!!!
         request_dates = sorted(
             list(request_dates)
         )  # Because lists are not hashable, therefore we can't use caching

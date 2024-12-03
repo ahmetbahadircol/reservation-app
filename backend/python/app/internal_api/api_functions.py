@@ -4,7 +4,7 @@ from datetime import datetime
 from app.internal_api.serializers import AvailableDatesSerializer
 
 
-GO_API_URL = "http://localhost:8080/api"
+GO_API_URL = "http://reservation-app-go-api-1:8080/api"
 
 
 def call_go_microservice(jwt_token):
@@ -26,7 +26,6 @@ def call_go_microservice(jwt_token):
 def get_available_dates_for_unit(
     request_dates: list[datetime.date], busy_dates: list[datetime.date], days: int
 ) -> requests.Response:
-    print("Sending request ------------")
     payload = {
         "days": days,
         "request_dates": request_dates,
@@ -38,4 +37,7 @@ def get_available_dates_for_unit(
         return requests.post(
             url=GO_API_URL + "/get-available-dates", json=serializer.data
         )
-    raise requests.Response(serializer.errors, status=400)
+    try:
+        raise requests.Response(serializer.errors, status=400)
+    except ConnectionError as e:
+        return ValueError("Connection Error!!!")
